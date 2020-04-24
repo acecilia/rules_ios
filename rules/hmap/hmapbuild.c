@@ -1,6 +1,8 @@
 #include <getopt.h>
+#include <libgen.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/errno.h>
 
 #include "hmap.h"
 #include "uthash.h"
@@ -17,12 +19,13 @@ static void usage();
 static void debug(char *format, ...);
 static inline void chomp(char *s);
 static void add_entry(mapping **hashmap, char *key, char *value);
-static int add_mappings_from_file(mapping **hashmap, char *file);
+static int add_mappings_from_file(mapping **hashmap, char *file, char *namespace);
 static int add_mappings_from_headermap(mapping **hashmap, char *file);
 static int add_mappings_from_headermap_file(mapping **hashmap, char *file);
 
 static struct option longopts[] = {
     {"merge-hmaps", required_argument, NULL, 'm'},
+    {"namespace", required_argument, NULL, 'n'},
     {"add-mappings", required_argument, NULL, 'a'},
     {"verbose", no_argument, NULL, 'v'},
     {NULL, 0, NULL, 0},
@@ -32,13 +35,17 @@ int main(int ac, char **av) {
     int c;
     char *extra_headermaps_file = NULL;
     char *extra_mappings_file = NULL;
+    char *namespace = NULL;
     char *input_file = NULL;
     char *output_file = NULL;
 
-    while ((c = getopt_long(ac, av, "m:a:", longopts, NULL)) != -1) {
+    while ((c = getopt_long(ac, av, "m:n:a:", longopts, NULL)) != -1) {
         switch (c) {
             case 'm':
                 extra_headermaps_file = strdup(optarg);
+                break;
+            case 'n':
+                namespace = strdup(optarg);
                 break;
             case 'a':
                 extra_mappings_file = strdup(optarg);
@@ -60,7 +67,7 @@ int main(int ac, char **av) {
     mapping *entries = NULL;
 
     debug("Adding inputs");
-    if (add_mappings_from_file(&entries, input_file)) {
+    if (add_mappings_from_file(&entries, input_file, namespace)) {
         fprintf(stderr, "Failed to add mappings from %s\n", input_file);
         exit(1);
     }
@@ -68,7 +75,7 @@ int main(int ac, char **av) {
     // add extra mappings:
     if (extra_mappings_file) {
         debug("Adding mappings");
-        if (add_mappings_from_file(&entries, extra_mappings_file)) {
+        if (add_mappings_from_file(&entries, extra_mappings_file, namespace)) {
             fprintf(stderr, "Failed to add extra mappings from '%s'\n",
                     extra_mappings_file);
             exit(1);
@@ -103,7 +110,6 @@ int main(int ac, char **av) {
         perror(output_file);
     }
     hmap_free(hmap);
-    // don't bother free'ing the hash since we are exiting anyway
     return 0;
 }
 
@@ -149,7 +155,7 @@ static inline void chomp(char *s) {
     if (s[len - 1] == '\n') s[len - 1] = '\0';
 }
 
-static int add_mappings_from_file(mapping **hashmap, char *file) {
+static int add_mappings_from_file(mapping **hashmap, char *file, char *namespace) {
     FILE *f = fopen(file, "r");
     if (!f) {
         perror(file);
@@ -163,14 +169,33 @@ static int add_mappings_from_file(mapping **hashmap, char *file) {
         chomp(line);
         if (strlen(line) == 0) continue;  // skip empty lines
         char *pipe = strchr(line, '|');
-        if (!pipe) {
-            fprintf(stderr, "Error parsing k|v pair in line: '%s'\n", line);
+        if (pipe) {
+            // old format: K|V
+            *pipe = '\0';
+            char *key = strdup(line);
+            char *value = strdup(++pipe);
+            add_entry(hashmap, key, value);
+            continue;
+        }
+        // no pipe, this is the new format, just value, key is inferred.
+        char *bn = basename(line);
+        if (bn == NULL) {
+            fprintf(stderr, "Failed to parse '%s': could not extract basename: %s\n", line, strerror(errno));
             exit(1);
         }
-        *pipe = '\0';
-        char *key = strdup(line);
-        char *value = strdup(++pipe);
+        char *key = strdup(bn);
+        char *value = strdup(line);
         add_entry(hashmap, key, value);
+        if (namespace) {
+            char *key = NULL;
+            char *value = strdup(line);
+            asprintf(&key, "%s/%s", namespace, bn);
+            if (!key) {
+                perror("malloc");
+                exit(1);
+            }
+            add_entry(hashmap, key, value);
+        }
     }
     fclose(f);
     if (line) free(line);

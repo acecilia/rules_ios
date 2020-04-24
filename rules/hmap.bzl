@@ -1,33 +1,5 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "SwiftInfo")
 
-def _make_headermap_input_file(namespace, hdrs, flatten_headers):
-    """Create a string representing the mappings from headers to their
-    namespaced include versions. The format is
-
-    virtual_header_path|real_header_path
-
-    Note the separator is a pipe character.
-
-    :param namespace: 'foo' in #include <foo/bar.h>
-    :param hdrs: list of header that need to be mapped
-    :param flatten_headers: boolean value that if set, will "flatten"
-           the virtual heders. What this means is that the headers
-           will also be added without the namespace or any paths
-           (basename).
-
-    :return: string with all the headers in the above mentioned
-    format. This can be saved to a file and read by the hmapbuild tool
-    included here to create a header map file.
-
-    """
-    entries = []
-    for hdr in hdrs:
-        namespaced_key = namespace + "/" + hdr.basename
-        entries.append("{}|{}".format(hdr.basename, hdr.path))
-        if flatten_headers:
-            entries.append("{}|{}".format(namespaced_key, hdr.path))
-    return "\n".join(entries) + "\n"
-
 def _make_headermap_impl(ctx):
     """Implementation of the headermap() rule. It creates a text file with
     the mappings and creates an action that calls out to the hmapbuild
@@ -51,9 +23,8 @@ def _make_headermap_impl(ctx):
         else:
             fail("direct_hdr_provider %s must contain either 'CcInfo' or 'objc' provider" % provider)
 
-    out = _make_headermap_input_file(ctx.attr.namespace, all_hdrs, ctx.attr.flatten_headers)
     ctx.actions.write(
-        content = out,
+        content = "\n".join([h.path for h in all_hdrs]),
         output = input_f,
     )
 
@@ -61,6 +32,8 @@ def _make_headermap_impl(ctx):
     merge_hmaps = {}
     inputs = [input_f]
     args = []
+    if ctx.attr.namespace_headers:
+        args += ["--namespace", ctx.attr.namespace]
 
     if merge_hmaps:
         paths = []
@@ -102,7 +75,7 @@ headermap = rule(
     attrs = {
         "namespace": attr.string(
             mandatory = True,
-            doc = "The prefix to be used for header imports when flatten_headers is true",
+            doc = "The prefix to be used for header imports when namespace_headers is true",
         ),
         "hdrs": attr.label_list(
             mandatory = True,
@@ -113,7 +86,7 @@ headermap = rule(
             mandatory = False,
             doc = "Targets whose direct headers should be added to the list of hdrs",
         ),
-        "flatten_headers": attr.bool(
+        "namespace_headers": attr.bool(
             mandatory = True,
             doc = "Whether headers should be importable with the namespace as a prefix",
         ),

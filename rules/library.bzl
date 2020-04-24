@@ -398,7 +398,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         name = public_hmap_name,
         namespace = namespace,
         hdrs = [public_hdrs_filegroup],
-        flatten_headers = True,
+        namespace_headers = True,
         tags = _MANUAL,
     )
     internal_deps.append(public_hmap_name)
@@ -422,7 +422,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         name = private_hmap_name,
         namespace = namespace,
         hdrs = [private_hdrs_filegroup],
-        flatten_headers = False,
+        namespace_headers = False,
         tags = _MANUAL,
     )
     internal_deps.append(private_hmap_name)
@@ -430,7 +430,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         name = private_angled_hmap_name,
         namespace = namespace,
         hdrs = [private_angled_hdrs_filegroup],
-        flatten_headers = True,
+        namespace_headers = True,
         tags = _MANUAL,
     )
     internal_deps.append(private_angled_hmap_name)
@@ -524,7 +524,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
             namespace = namespace,
             hdrs = [],
             direct_hdr_providers = [swift_libname],
-            flatten_headers = True,
+            namespace_headers = True,
             tags = _MANUAL,
         )
         internal_deps.append(swift_doublequote_hmap_name)
