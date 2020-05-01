@@ -1,0 +1,27 @@
+load("//rules:framework.bzl", "apple_framework")
+load("@build_bazel_rules_apple//apple:apple.bzl", "apple_dynamic_framework_import")
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+apple_framework(
+  name = "InputMask",
+  vendored_dynamic_frameworks = ["Carthage/build/iOS/InputMask.framework"],
+  visibility = ["//visibility:public"],
+)
+
+apple_framework(
+    name = "MixedSourceFramework",
+    srcs = glob(
+        include = [
+            "MixedSourceFramework/**/*.h",
+            "MixedSourceFramework/**/*.m",
+            "MixedSourceFramework/**/*.swift"
+            ],
+        exclude = ["MixedSourceFramework/MixedSourceFramework.h"],
+    ),
+    deps = [
+        ":InputMask",
+    ],    
+    visibility = ["//visibility:public"],
+    # includes = ["module.modulemap"]
+)
+
