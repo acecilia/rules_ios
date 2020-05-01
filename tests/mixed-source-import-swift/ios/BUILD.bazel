@@ -1,0 +1,27 @@
+load("//rules:framework.bzl", "apple_framework")
+load("@build_bazel_rules_apple//apple:apple.bzl", "apple_dynamic_framework_import")
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+swift_library(
+  name = "SwiftLibrary",
+  module_name = "SwiftLibrary",
+  srcs = glob(["SwiftLibrary/**/*.swift"]),
+  visibility = ["//visibility:public"],
+)
+
+apple_framework(
+    name = "MixedSourceFramework",
+    srcs = glob(
+        include = [
+            "MixedSourceFramework/**/*.h",
+            "MixedSourceFramework/**/*.m",
+            "MixedSourceFramework/**/*.swift"
+            ],
+        exclude = ["MixedSourceFramework/MixedSourceFramework.h"],
+    ),
+    deps = [
+        ":SwiftLibrary",
+    ],    
+    visibility = ["//visibility:public"],
+)
+
