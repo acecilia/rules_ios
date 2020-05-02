@@ -8,6 +8,39 @@ apple_framework(
   visibility = ["//visibility:public"],
 )
 
+name = "InputMask"
+carthage_rule_name = name + "Carthage"
+exported_headers_path = "includedir"
+files = glob(["Carthage/Build/iOS/InputMask.framework/**/*"])
+outs = ["cucu/" + file for file in files]
+genrule(
+    name = carthage_rule_name,
+    srcs = files,
+    #outs = ["cucu/" + file for file in files],
+    outs = outs,
+    #cmd  = "mkdir -p $(RULEDIR)/cucu && cp $(SRCS) $(RULEDIR)/cucu",
+    #     cmd  = 'echo "$(SRCS)" | sed "s|tests/mixed-source-import-swift-framework/ios/||g" | tr " " "\\n" | xargs -I{} dirname -- "$(RULEDIR)/cucu/{}" | xargs mkdir -p; echo "$(SRCS)" | sed "s|tests/mixed-source-import-swift-framework/ios/||g" | tr " " "\\n" | xargs -I{} cp {} $(RULEDIR)/cucu/{}',
+        # cmd  = 'echo "$(SRCS)" | while read n;do mkdir -p cucu/$(dirname -- "$n");done',
+    cmd  = 'echo "$(SRCS)" | tr " " "\\n" | xargs -I{} cp tests/mixed-source-import-swift-framework/ios/{} $(RULEDIR)/cucu/{}',
+    # WORKS: cmd  = 'echo "$(SRCS)" | sed "s|tests/mixed-source-import-swift-framework/ios/||g" | tr " " "\\n" | xargs -I{} cp tests/mixed-source-import-swift-framework/ios/{} $(RULEDIR)/cucu/{}',
+    # WORKS2: cmd  = 'echo "$(SRCS)" | sed "s|tests/mixed-source-import-swift-framework/ios/||g" | tr " " "\\n" | xargs -I{} dirname -- "$(RULEDIR)/cucu/{}" | xargs mkdir -p; echo "$(SRCS)" | sed "s|tests/mixed-source-import-swift-framework/ios/||g" | tr " " "\\n" | xargs -I{} cp {} $(RULEDIR)/cucu/{}',
+
+
+)
+carthage_rule = [":" + carthage_rule_name]
+
+# name = "InputMask"
+# carthage_rule_name = name + "Carthage"
+# exported_headers_path = "includedir"
+# files = glob(["Carthage/build/iOS/InputMask.framework/**/*"])
+# genrule(
+#     name = carthage_rule_name,
+#     srcs = ["Carthage/build/iOS/InputMask.framework/InputMask"],
+#     outs = ["cucu/InputMask"],
+#     cmd  = "cp $(SRCS) $(RULEDIR)" + "/cucu/InputMask",
+# )
+# carthage_rule = [":" + carthage_rule_name]
+
 apple_framework(
     name = "MixedSourceFramework",
     srcs = glob(
