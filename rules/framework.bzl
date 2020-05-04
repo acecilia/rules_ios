@@ -26,7 +26,7 @@ def apple_framework(name, apple_library = apple_library, **kwargs):
         tags = kwargs.get("tags", None),
     )
 
-def apple_prebuilt_static_framework(path, **kwargs):
+def apple_prebuilt_static_framework(name, path, **kwargs):
     """Builds and packages a prebuilt Apple static framework.
 
     This is here because the current implementation of apple_static_framework_import does not work
@@ -34,12 +34,13 @@ def apple_prebuilt_static_framework(path, **kwargs):
     - https://github.com/bazel-ios/rules_ios/issues/55
 
     Args:
+        name: The name of the rule.
         path: The name of the framework.
         kwargs: Arguments passed to the apple_framework_packaging rule.
     """
 
     framework_name = paths.split_extension(paths.basename(path))[0]
-    filegroup_name = "%s-file-group" % framework_name
+    filegroup_name = "%s-%s-file-group" % (name, framework_name)
     native.filegroup(
         name = filegroup_name,
         srcs = native.glob(["%s/**/*" % path]),
@@ -47,7 +48,7 @@ def apple_prebuilt_static_framework(path, **kwargs):
     )
 
     apple_framework_packaging(
-        name = framework_name,
+        name = name,
         framework_name = framework_name,
         transitive_deps = [],
         deps = [filegroup_name],
