@@ -1,6 +1,9 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_skylib//lib:types.bzl", "types")
 load("@build_bazel_rules_swift//swift:swift.bzl", "SwiftInfo")
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_common")
+load("@build_bazel_rules_apple//apple/internal:apple_framework_import.bzl", "AppleFrameworkImportInfo")
+load("@build_bazel_rules_apple//apple:apple.bzl", "apple_dynamic_framework_import", "apple_static_framework_import")
 load("//rules:library.bzl", "PrivateHeaders", "apple_library")
 load("//rules/vfs_overlay:vfs_overlay.bzl", "VFSOverlay")
 
@@ -12,12 +15,39 @@ def apple_framework(name, apple_library = apple_library, **kwargs):
         apple_library: The macro used to package sources into a library.
         kwargs: Arguments passed to the apple_library and apple_framework_packaging rules as appropriate.
     """
+
     library = apple_library(name = name, **kwargs)
     apple_framework_packaging(
         name = name,
         framework_name = library.namespace,
         transitive_deps = library.transitive_deps,
         deps = library.lib_names,
+        visibility = kwargs.get("visibility", None),
+        tags = kwargs.get("tags", None),
+    )
+
+def apple_prebuilt_framework(name, path, **kwargs):
+    """Builds and packages an Apple framework.
+
+    Args:
+        name: The name of the framework.
+        apple_library: The macro used to package sources into a library.
+        kwargs: Arguments passed to the apple_library and apple_framework_packaging rules as appropriate.
+    """
+
+    framework_name = paths.split_extension(paths.basename(path))[0]
+    filegroup_name = "%s-%s-file-group" % (name, framework_name)
+    native.filegroup(
+        name = filegroup_name,
+        srcs = native.glob(["%s/**/*" % path]),
+        tags = ["manual"],
+    )
+
+    apple_framework_packaging(
+        name = name,
+        framework_name = framework_name,
+        transitive_deps = [],
+        deps = [filegroup_name],
         visibility = kwargs.get("visibility", None),
         tags = kwargs.get("tags", None),
     )
@@ -93,39 +123,53 @@ def _apple_framework_packaging_impl(ctx):
     arch = ctx.fragments.apple.single_arch_cpu
 
     # swift specific artifacts
-    swiftmodule_in = None
-    swiftmodule_out = None
-    swiftdoc_in = None
-    swiftdoc_out = None
+    swiftmodules_in = []
+    swiftmodules_out = []
+    swiftdocs_in = []
+    swiftdocs_out = []
 
     # collect files
     for dep in ctx.attr.deps:
         files = dep.files.to_list()
         for file in files:
-            if file.is_source:
+            if file.basename == ".DS_Store":
                 continue
 
-            # collect binary files
-            if file.path.endswith(".a"):
+            # Collect headers
+            if file.path.endswith(".h"):
+                header_in.append(file)
+                destination = paths.join(framework_dir, "Headers", file.basename)
+                header_out.append(destination)
+
+            # collect static binary files
+            if file.path.endswith(".a") or file.extension == "":
                 binary_in.append(file)
 
             # collect swift specific files
-            if file.path.endswith(".swiftmodule"):
-                swiftmodule_in = file
-                swiftmodule_out = [paths.join(
-                    framework_dir,
-                    "Modules",
-                    framework_name + ".swiftmodule",
-                    arch + ".swiftmodule",
-                )]
-            if file.path.endswith(".swiftdoc"):
-                swiftdoc_in = file
-                swiftdoc_out = [paths.join(
-                    framework_dir,
-                    "Modules",
-                    framework_name + ".swiftmodule",
-                    arch + ".swiftdoc",
-                )]
+            if file.path.endswith(arch + ".swiftmodule"):
+                swiftmodules_in.append(file)
+                swiftmodules_out.append(
+                    paths.join(
+                        framework_dir,
+                        "Modules",
+                        framework_name + ".swiftmodule",
+                        file.basename,
+                    )
+                )
+            if file.path.endswith(arch + ".swiftdoc"):
+                swiftdocs_in.append(file)
+                swiftdocs_out.append(
+                    paths.join(
+                        framework_dir,
+                        "Modules",
+                        framework_name + ".swiftmodule",
+                        file.basename,
+                    )
+                )
+
+            # collect modulemap files
+            if file.path.endswith(".modulemap"):
+                modulemap_in = file
 
         if PrivateHeaders in dep:
             for hdr in dep[PrivateHeaders].headers.to_list():
@@ -134,6 +178,9 @@ def _apple_framework_packaging_impl(ctx):
                 private_header_out.append(destination)
 
         if apple_common.Objc in dep:
+            # for binary in getattr(dep[apple_common.Objc], "static_framework_file").to_list():
+            #     binary_in.append(binary)
+
             # collect headers
             has_header = False
             for hdr in dep[apple_common.Objc].direct_headers:
@@ -184,9 +231,13 @@ def _apple_framework_packaging_impl(ctx):
     header_out = _framework_packaging(ctx, "header", header_in, header_out, framework_manifest)
     private_header_out = _framework_packaging(ctx, "private_header", private_header_in, private_header_out, framework_manifest)
     modulemap_out = _framework_packaging(ctx, "modulemap", [modulemap_in], modulemap_out, framework_manifest)
-    swiftmodule_out = _framework_packaging(ctx, "swiftmodule", [swiftmodule_in], swiftmodule_out, framework_manifest)
-    swiftdoc_out = _framework_packaging(ctx, "swiftdoc", [swiftdoc_in], swiftdoc_out, framework_manifest)
-    framework_files = _concat(binary_out, modulemap_out, header_out, private_header_out, swiftmodule_out, swiftdoc_out)
+    total_swiftmodules_out = []
+    for (swiftmodule_in, swiftmodule_out) in zip(swiftmodules_in, swiftmodules_out):
+        total_swiftmodules_out.extend(_framework_packaging(ctx, "swiftmodule", [swiftmodule_in], [swiftmodule_out], framework_manifest))
+    total_swiftdocs_out = []
+    for (swiftdoc_in, swiftdoc_out) in zip(swiftdocs_in, swiftdocs_out):
+        total_swiftdocs_out.extend(_framework_packaging(ctx, "swiftdoc", [swiftdoc_in], [swiftdoc_out], framework_manifest))
+    framework_files = _concat(binary_out, modulemap_out, header_out, private_header_out, total_swiftmodules_out, total_swiftdocs_out)
     framework_root = _find_framework_dir(framework_files)
 
     if framework_root:
@@ -237,14 +288,21 @@ def _apple_framework_packaging_impl(ctx):
     )
 
     objc_provider_fields = {
-        "providers": [dep[apple_common.Objc] for dep in ctx.attr.transitive_deps],
+        "providers": [dep[apple_common.Objc] for dep in ctx.attr.transitive_deps if apple_common.Objc in dep],
     }
+
+    swift_infos = []
+    for dep in ctx.attr.transitive_deps:
+        if SwiftInfo in dep:
+            swift_infos.append(dep[SwiftInfo])
+
     if framework_root:
         objc_provider_fields["framework_search_paths"] = depset(
             direct = [framework_root],
         )
     _add_to_dict_if_present(objc_provider_fields, "header", depset(
-        direct = header_out + private_header_out + modulemap_out + [hmap_file],
+        # See how is done here: https://github.com/bazelbuild/rules_apple/blob/e6c34130bdcbb85126301ab88f298c244cede8c6/apple/internal/apple_framework_import.bzl#L98
+        direct = header_out + private_header_out + modulemap_out + [hmap_file] + total_swiftmodules_out,
     ))
     _add_to_dict_if_present(objc_provider_fields, "module_map", depset(
         direct = modulemap_out,
@@ -265,7 +323,7 @@ def _apple_framework_packaging_impl(ctx):
     ]:
         set = depset(
             direct = [],
-            transitive = [getattr(dep[apple_common.Objc], key) for dep in ctx.attr.deps],
+            transitive = [getattr(dep[apple_common.Objc], key) for dep in ctx.attr.deps if apple_common.Objc in dep],
         )
         _add_to_dict_if_present(objc_provider_fields, key, set)
 
