@@ -230,7 +230,7 @@ def _apple_framework_packaging_impl(ctx):
     elif len(prebuilt_binaries) == 0 and len(binary_objects_in) > 0:
         binary_out = _framework_packaging(ctx, "binary_objects", binary_objects_in, binary_out, framework_manifest)
     else:
-        fail("Found multiple binaries to pack inside the framework. It is not possible to pack multiple binaries inside a unique framework: each framework should contain one binary. Prebuilt binaries found: %s. Object binaries found: %s" % prebuilt_binaries, binary_objects_in)
+        fail("Found multiple binaries to pack inside the framework. It is not possible to pack multiple binaries inside a unique framework: each framework should contain one binary. Prebuilt binaries found: %s. Object binaries found: %s" % (prebuilt_binaries, binary_objects_in))
     header_out = _framework_packaging(ctx, "header", header_in, header_out, framework_manifest)
     private_header_out = _framework_packaging(ctx, "private_header", private_header_in, private_header_out, framework_manifest)
     modulemap_out = _framework_packaging(ctx, "modulemap", [modulemap_in], modulemap_out, framework_manifest)
