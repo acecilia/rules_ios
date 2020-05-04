@@ -134,8 +134,10 @@ def main():
             lambda args: _copy_headers(args.framework_root, args.inputs),
         "private_header":
             lambda args: _copy_private_headers(args.framework_root, args.inputs),
-        "binary":
+        "binary_objects":
             lambda args: _merge_binaries(args.framework_root, args.framework_name, args.inputs),
+        "prebuilt_binary":
+            lambda args: _cp(args.input(), args.output()),
         "modulemap":
             lambda args: _copy_modulemap(args.framework_root, args.input()),
         "swiftmodule":

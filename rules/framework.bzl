@@ -26,17 +26,20 @@ def apple_framework(name, apple_library = apple_library, **kwargs):
         tags = kwargs.get("tags", None),
     )
 
-def apple_prebuilt_framework(name, path, **kwargs):
-    """Builds and packages an Apple framework.
+def apple_prebuilt_static_framework(path, **kwargs):
+    """Builds and packages a prebuilt Apple static framework.
+
+    This is here because the current implementation of apple_static_framework_import does not work
+    well with clang modules. Related issues:
+    - https://github.com/bazel-ios/rules_ios/issues/55
 
     Args:
-        name: The name of the framework.
-        apple_library: The macro used to package sources into a library.
-        kwargs: Arguments passed to the apple_library and apple_framework_packaging rules as appropriate.
+        path: The name of the framework.
+        kwargs: Arguments passed to the apple_framework_packaging rule.
     """
 
     framework_name = paths.split_extension(paths.basename(path))[0]
-    filegroup_name = "%s-%s-file-group" % (name, framework_name)
+    filegroup_name = "%s-file-group" % framework_name
     native.filegroup(
         name = filegroup_name,
         srcs = native.glob(["%s/**/*" % path]),
@@ -44,7 +47,7 @@ def apple_prebuilt_framework(name, path, **kwargs):
     )
 
     apple_framework_packaging(
-        name = name,
+        name = framework_name,
         framework_name = framework_name,
         transitive_deps = [],
         deps = [filegroup_name],
@@ -102,7 +105,8 @@ def _apple_framework_packaging_impl(ctx):
     framework_dir = "%s/%s.framework" % (ctx.attr.name, framework_name)
 
     # binaries
-    binary_in = []
+    binary_objects_in = []
+    prebuilt_binaries = []
 
     # headers
     header_in = []
@@ -141,9 +145,13 @@ def _apple_framework_packaging_impl(ctx):
                 destination = paths.join(framework_dir, "Headers", file.basename)
                 header_out.append(destination)
 
-            # collect static binary files
-            if file.path.endswith(".a") or file.extension == "":
-                binary_in.append(file)
+            # collect binary onject files
+            if file.path.endswith(".a"):
+                binary_objects_in.append(file)
+
+            # Collect prebuilt binary
+            if file.basename == framework_name:
+                prebuilt_binaries.append(file)
 
             # collect swift specific files
             if file.path.endswith(arch + ".swiftmodule"):
@@ -178,9 +186,6 @@ def _apple_framework_packaging_impl(ctx):
                 private_header_out.append(destination)
 
         if apple_common.Objc in dep:
-            # for binary in getattr(dep[apple_common.Objc], "static_framework_file").to_list():
-            #     binary_in.append(binary)
-
             # collect headers
             has_header = False
             for hdr in dep[apple_common.Objc].direct_headers:
@@ -210,24 +215,21 @@ def _apple_framework_packaging_impl(ctx):
                     continue
                 modulemap_in = modulemap
 
-    binary_out = None
-    modulemap_out = None
-    if binary_in:
-        binary_out = [
-            paths.join(framework_dir, framework_name),
-        ]
-    if modulemap_in:
-        modulemap_out = [
-            paths.join(framework_dir, "Modules", "module.modulemap"),
-        ]
 
+    binary_out = [paths.join(framework_dir, framework_name)]
+    modulemap_out = [paths.join(framework_dir, "Modules", "module.modulemap")]
     framework_manifest = ctx.actions.declare_file(framework_dir + ".manifest")
 
     # Package each part of the framework separately,
     # so inputs that do not depend on compilation
     # are available before those that do,
     # improving parallelism
-    binary_out = _framework_packaging(ctx, "binary", binary_in, binary_out, framework_manifest)
+    if len(prebuilt_binaries) > 0 and len(binary_objects_in) == 0:
+        binary_out = _framework_packaging(ctx, "prebuilt_binary", prebuilt_binaries, binary_out, framework_manifest)
+    elif len(prebuilt_binaries) == 0 and len(binary_objects_in) > 0:
+        binary_out = _framework_packaging(ctx, "binary_objects", binary_objects_in, binary_out, framework_manifest)
+    else:
+        fail("Found multiple binaries to pack inside the framework. It is not possible to pack multiple binaries inside a unique framework: each framework should contain one binary. Prebuilt binaries found: %s. Object binaries found: %s" % prebuilt_binaries, binary_objects_in)
     header_out = _framework_packaging(ctx, "header", header_in, header_out, framework_manifest)
     private_header_out = _framework_packaging(ctx, "private_header", private_header_in, private_header_out, framework_manifest)
     modulemap_out = _framework_packaging(ctx, "modulemap", [modulemap_in], modulemap_out, framework_manifest)
@@ -305,7 +307,11 @@ def _apple_framework_packaging_impl(ctx):
             private_header_out + 
             modulemap_out + 
             [hmap_file] + 
-            total_swiftmodules_out, # Why passing the swift modules as headers? Find the rationale here: https://github.com/bazelbuild/rules_apple/blob/e6c34130bdcbb85126301ab88f298c244cede8c6/apple/internal/apple_framework_import.bzl#L98
+            # Why passing the swift modules as headers? 
+            # Find the rationale here: https://github.com/bazelbuild/rules_apple/blob/e6c34130bdcbb85126301ab88f298c244cede8c6/apple/internal/apple_framework_import.bzl#L98
+            # Without this, you will get the error "XXX/Foo.swift:103:20: error: 'ABC' is unavailable: cannot find 
+            # Swift declaration for this class" when using apple_prebuilt_static_framework
+            total_swiftmodules_out,
     ))
     _add_to_dict_if_present(objc_provider_fields, "module_map", depset(
         direct = modulemap_out,
