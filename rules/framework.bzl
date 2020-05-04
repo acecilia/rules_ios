@@ -301,8 +301,11 @@ def _apple_framework_packaging_impl(ctx):
             direct = [framework_root],
         )
     _add_to_dict_if_present(objc_provider_fields, "header", depset(
-        # See how is done here: https://github.com/bazelbuild/rules_apple/blob/e6c34130bdcbb85126301ab88f298c244cede8c6/apple/internal/apple_framework_import.bzl#L98
-        direct = header_out + private_header_out + modulemap_out + [hmap_file] + total_swiftmodules_out,
+        direct = header_out + 
+            private_header_out + 
+            modulemap_out + 
+            [hmap_file] + 
+            total_swiftmodules_out, # Why passing the swift modules as headers? Find the rationale here: https://github.com/bazelbuild/rules_apple/blob/e6c34130bdcbb85126301ab88f298c244cede8c6/apple/internal/apple_framework_import.bzl#L98
     ))
     _add_to_dict_if_present(objc_provider_fields, "module_map", depset(
         direct = modulemap_out,
