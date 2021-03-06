@@ -1,0 +1,13 @@
+load("@build_bazel_rules_ios//rules:static_framework_generator.bzl", "static_framework_generator")
+load("@build_bazel_rules_ios//rules/cache_exporter:cache_exporter.bzl", "cache_exporter")
+
+static_framework_generator(
+    name = "TargetXIBStaticFrameworkGenerator",
+    targets = ["//tests/ios/static_framework_generator:TargetXIB"],
+)
+
+cache_exporter(
+    name = "CacheExporter",
+    destination_relative_to_workspace = "cucu",
+    targets = [":TargetXIBStaticFrameworkGenerator"],
+)
