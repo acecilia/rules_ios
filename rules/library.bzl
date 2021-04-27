@@ -290,12 +290,14 @@ def _xcframework(*, library_name, name, slices):
                     name,
                 ))
             conditions[config_setting_name] = name
-            print(platform)
-            print(arch)
             selects.config_setting_group(
                 name = config_setting_name,
                 match_all = [platform_setting, arch_setting],
             )
+
+    if name == "Nimble-import-Nimble.xcframework-ios-arm64_armv7":
+        print(xcframework_name)
+        print(conditions)
 
     native.alias(
         name = xcframework_name,
