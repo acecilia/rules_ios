@@ -289,6 +289,7 @@ def _xcframework(*, library_name, name, slices):
                     conditions[config_setting_name],
                     name,
                 ))
+            print(config_setting_name)
             conditions[config_setting_name] = name
             selects.config_setting_group(
                 name = config_setting_name,
