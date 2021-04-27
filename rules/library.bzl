@@ -302,7 +302,7 @@ def _xcframework(*, library_name, name, slices):
 
     native.alias(
         name = xcframework_name,
-        actual = select(conditions, no_match_error = "Unable to find a matching slice for {}.xcframework used by {}".format(
+        actual = native.select(conditions, no_match_error = "Unable to find a matching slice for {}.xcframework used by {}".format(
             name,
             library_name,
         )),
