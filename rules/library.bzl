@@ -298,6 +298,7 @@ def _xcframework(*, library_name, name, slices):
     if name == "Nimble-import-Nimble.xcframework-ios-arm64_armv7":
         print(xcframework_name)
         print(conditions)
+        print(slices)
 
     native.alias(
         name = xcframework_name,
