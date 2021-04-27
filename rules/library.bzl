@@ -289,13 +289,13 @@ def _xcframework(*, library_name, name, slices):
                     conditions[config_setting_name],
                     name,
                 ))
-            print(config_setting_name)
             conditions[config_setting_name] = name
             selects.config_setting_group(
                 name = config_setting_name,
                 match_all = [platform_setting, arch_setting],
             )
 
+    print(conditions)
     native.alias(
         name = xcframework_name,
         actual = select(conditions, no_match_error = "Unable to find a matching slice for {}.xcframework used by {}".format(
