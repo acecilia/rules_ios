@@ -265,6 +265,8 @@ def _xcframework(*, library_name, name, slices):
     conditions = {}
     for slice in slices:
         platform, platform_variant, archs, name = _xcframework_slice(xcframework_name = xcframework_name, **slice)
+        print(platform)
+        print(arch)
         platform_setting = "@build_bazel_rules_ios//rules/apple_platform:" + platform
         # platform_variant_setting = "@build_bazel_rules_ios//rules/apple_platform:platform_variant_" + platform_variant if platform_variant else None
 
@@ -295,7 +297,6 @@ def _xcframework(*, library_name, name, slices):
                 match_all = [platform_setting, arch_setting],
             )
 
-    print(conditions)
     native.alias(
         name = xcframework_name,
         actual = select(conditions, no_match_error = "Unable to find a matching slice for {}.xcframework used by {}".format(
