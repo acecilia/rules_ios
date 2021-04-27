@@ -265,8 +265,6 @@ def _xcframework(*, library_name, name, slices):
     conditions = {}
     for slice in slices:
         platform, platform_variant, archs, name = _xcframework_slice(xcframework_name = xcframework_name, **slice)
-        print(platform)
-        print(arch)
         platform_setting = "@build_bazel_rules_ios//rules/apple_platform:" + platform
         # platform_variant_setting = "@build_bazel_rules_ios//rules/apple_platform:platform_variant_" + platform_variant if platform_variant else None
 
@@ -292,6 +290,8 @@ def _xcframework(*, library_name, name, slices):
                     name,
                 ))
             conditions[config_setting_name] = name
+            print(platform)
+            print(arch)
             selects.config_setting_group(
                 name = config_setting_name,
                 match_all = [platform_setting, arch_setting],
