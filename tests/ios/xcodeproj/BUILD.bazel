@@ -2,6 +2,15 @@ load("//rules:xcodeproj.bzl", "xcodeproj")
 load("//rules:additional_scheme_info.bzl", "additional_scheme_info")
 
 xcodeproj(
+    name = "Test-Project-With-Coredata-Model",
+    bazel_path = "bazelisk",
+    include_transitive_targets = True,
+    deps = [
+        "//tests/ios/frameworks/core-data-resource-bundle:CoreDataExample",
+    ],
+)
+
+xcodeproj(
     name = "Single-Static-Framework-Project",
     testonly = True,
     additional_scheme_infos = [

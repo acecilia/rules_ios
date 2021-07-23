@@ -1,0 +1,337 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		020BE490822F4EFA2B6795FB /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F691623ED0B1E16979DAAEB9 /* CoreDataManager.swift */; };
+		552A7E320FD8957F5E85ABBC /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7DA1EF77DC1F116A9FE43D /* Person.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		055E0132344B68D4A4471FD6 /* common.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.pch; sourceTree = "<group>"; };
+		149ED90C9A67885093E0043F /* BUILD.bazel */ = {isa = PBXFileReference; path = BUILD.bazel; sourceTree = "<group>"; };
+		1AC89D1766C448D52EAF2CDA /* resource_bundle.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = resource_bundle.plist; sourceTree = "<group>"; };
+		212003282B0F838AE5C91DBE /* CoreDataExample.framework */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.framework; path = CoreDataExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA7DA1EF77DC1F116A9FE43D /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		F691623ED0B1E16979DAAEB9 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0967C854D1BB17B9EAF3A618 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				36954B2D329E391C36F6AFB8 /* frameworks */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		16F0C037881DFC63962FF09D = {
+			isa = PBXGroup;
+			children = (
+				80AF0FC0E06063A9291452DC /* build_bazel_rules_ios */,
+				98562E58B7681347DBA4F4A4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		36954B2D329E391C36F6AFB8 /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B075204F348E6EBADB958E15 /* core-data-resource-bundle */,
+			);
+			path = frameworks;
+			sourceTree = "<group>";
+		};
+		5B68C9CBFF4DE0604B0D111D /* library */ = {
+			isa = PBXGroup;
+			children = (
+				055E0132344B68D4A4471FD6 /* common.pch */,
+				1AC89D1766C448D52EAF2CDA /* resource_bundle.plist */,
+			);
+			path = library;
+			sourceTree = "<group>";
+		};
+		73D5D31F2F0AA7ADC26D361D /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				0967C854D1BB17B9EAF3A618 /* ios */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		80AF0FC0E06063A9291452DC /* build_bazel_rules_ios */ = {
+			isa = PBXGroup;
+			children = (
+				F72693636B28112EB9AB93E2 /* rules */,
+				73D5D31F2F0AA7ADC26D361D /* tests */,
+			);
+			name = build_bazel_rules_ios;
+			path = ../../..;
+			sourceTree = "<group>";
+		};
+		98562E58B7681347DBA4F4A4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				212003282B0F838AE5C91DBE /* CoreDataExample.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B075204F348E6EBADB958E15 /* core-data-resource-bundle */ = {
+			isa = PBXGroup;
+			children = (
+				149ED90C9A67885093E0043F /* BUILD.bazel */,
+				ED64C0865EC408099B53BDDA /* CoreDataExample */,
+			);
+			path = "core-data-resource-bundle";
+			sourceTree = "<group>";
+		};
+		ED64C0865EC408099B53BDDA /* CoreDataExample */ = {
+			isa = PBXGroup;
+			children = (
+				F691623ED0B1E16979DAAEB9 /* CoreDataManager.swift */,
+				5B1CA7E44697CE3575B14AE1 /* Model.xcdatamodeld */,
+				EA7DA1EF77DC1F116A9FE43D /* Person.swift */,
+			);
+			path = CoreDataExample;
+			sourceTree = "<group>";
+		};
+		F72693636B28112EB9AB93E2 /* rules */ = {
+			isa = PBXGroup;
+			children = (
+				5B68C9CBFF4DE0604B0D111D /* library */,
+			);
+			path = rules;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D51FDF343145E78D954F7CD6 /* CoreDataExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD3E3A78F24433C200E8002C /* Build configuration list for PBXNativeTarget "CoreDataExample" */;
+			buildPhases = (
+				91AE0FEC1E415EAA56C7D06C /* Build with bazel */,
+				E9FF78154B52DAC6FD40D467 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CoreDataExample;
+			productName = CoreDataExample;
+			productReference = 212003282B0F838AE5C91DBE /* CoreDataExample.framework */;
+			productType = "com.apple.product-type.framework.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8D6660AFD5E15AAC1E4B28AD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1200;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = FF0140DB46FBEC31B67889BE /* Build configuration list for PBXProject "Test-Project-With-Coredata-Model" */;
+			compatibilityVersion = "Xcode 10.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 16F0C037881DFC63962FF09D;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D51FDF343145E78D954F7CD6 /* CoreDataExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		91AE0FEC1E415EAA56C7D06C /* Build with bazel */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build with bazel";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nset -euxo pipefail\ncd $BAZEL_WORKSPACE_ROOT\n\nexport BAZEL_DIAGNOSTICS_DIR=\"$BUILD_DIR/../../bazel-xcode-diagnostics/\"\nmkdir -p $BAZEL_DIAGNOSTICS_DIR\nexport DATE_SUFFIX=\"$(date +%Y%m%d.%H%M%S%L)\"\nexport BAZEL_BUILD_EVENT_TEXT_FILENAME=\"$BAZEL_DIAGNOSTICS_DIR/build-event-$DATE_SUFFIX.txt\"\nexport BAZEL_BUILD_EXECUTION_LOG_FILENAME=\"$BAZEL_DIAGNOSTICS_DIR/build-execution-log-$DATE_SUFFIX.log\"\nexport BAZEL_PROFILE_FILENAME=\"$BAZEL_DIAGNOSTICS_DIR/build-profile-$DATE_SUFFIX.log\"\nenv -u RUBYOPT -u RUBY_HOME -u GEM_HOME $BAZEL_BUILD_EXEC $BAZEL_BUILD_TARGET_LABEL\n$BAZEL_INSTALLER\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9FF78154B52DAC6FD40D467 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				020BE490822F4EFA2B6795FB /* CoreDataManager.swift in Sources */,
+				552A7E320FD8957F5E85ABBC /* Person.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3E03AB76E0DA2CCB5FA25DC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BAZEL_BIN_SUBDIR = "/tests/ios/frameworks/core-data-resource-bundle";
+				BAZEL_BUILD_TARGET_LABEL = "tests/ios/frameworks/core-data-resource-bundle:CoreDataExample";
+				BAZEL_BUILD_TARGET_WORKSPACE = build_bazel_rules_ios;
+				BAZEL_LLDB_INIT_FILE = $CONFIGURATION_TEMP_DIR/CoreDataExample.lldbinit;
+				BAZEL_LLDB_SWIFT_EXTRA_CLANG_FLAGS = "";
+				BAZEL_SWIFTMODULEFILES_TO_COPY = "bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftmodule bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftdoc bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftsourceinfo";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PLATFORM_DIR)/Developer/Library/Frameworks";
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "\"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_public_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_private_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_swift_doublequote_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_swift_angle_bracket_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT\"";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACH_O_TYPE = "$(inherited)";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = CoreDataExample;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "\"$(inherited)\"";
+			};
+			name = Debug;
+		};
+		706A82930362B1A9C3631389 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BAZEL_BIN_SUBDIR = "/tests/ios/frameworks/core-data-resource-bundle";
+				BAZEL_BUILD_TARGET_LABEL = "tests/ios/frameworks/core-data-resource-bundle:CoreDataExample";
+				BAZEL_BUILD_TARGET_WORKSPACE = build_bazel_rules_ios;
+				BAZEL_LLDB_INIT_FILE = $CONFIGURATION_TEMP_DIR/CoreDataExample.lldbinit;
+				BAZEL_LLDB_SWIFT_EXTRA_CLANG_FLAGS = "";
+				BAZEL_SWIFTMODULEFILES_TO_COPY = "bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftmodule bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftdoc bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample.swiftsourceinfo";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PLATFORM_DIR)/Developer/Library/Frameworks";
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = "\"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_public_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_private_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_swift_doublequote_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT/bazel-out/ios-x86_64-min11.0-applebin_ios-ios_x86_64-dbg-ST-1665503f7bef/bin/tests/ios/frameworks/core-data-resource-bundle/CoreDataExample_swift_angle_bracket_hmap.hmap\" \"$BAZEL_WORKSPACE_ROOT\"";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACH_O_TYPE = "$(inherited)";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = CoreDataExample;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "\"$(inherited)\"";
+			};
+			name = Release;
+		};
+		752554E68E9AF0B2405577A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BAZEL_ADDITIONAL_BAZEL_BUILD_OPTIONS = "";
+				BAZEL_ADDITIONAL_LLDB_SETTINGS = "";
+				BAZEL_BUILD_EXEC = "$BAZEL_STUBS_DIR/build-wrapper";
+				BAZEL_CONFIGS = (
+				);
+				BAZEL_EXECUTION_LOG_ENABLED = 0;
+				BAZEL_INSTALLER = $BAZEL_INSTALLERS_DIR/installer;
+				BAZEL_INSTALLERS_DIR = $PROJECT_FILE_PATH/bazelinstallers;
+				BAZEL_OUTPUT_PROCESSOR = "$BAZEL_STUBS_DIR/output-processor.rb";
+				BAZEL_PATH = bazelisk;
+				BAZEL_PROFILE_ENABLED = 0;
+				BAZEL_STUBS_DIR = $PROJECT_FILE_PATH/bazelstubs;
+				BAZEL_WORKSPACE_ROOT = $SRCROOT/../../..;
+				CC = "$BAZEL_STUBS_DIR/clang-stub";
+				CLANG_ANALYZER_EXEC = $CC;
+				CODE_SIGNING_ALLOWED = 0;
+				CXX = $CC;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DONT_RUN_SWIFT_STDLIB_TOOL = 1;
+				LD = "$BAZEL_STUBS_DIR/ld-stub";
+				LIBTOOL = /usr/bin/true;
+				OTHER_LDFLAGS = "-fuse-ld=$BAZEL_STUBS_DIR/ld-stub";
+				SDKROOT = iphoneos;
+				SWIFT_EXEC = "$BAZEL_STUBS_DIR/swiftc-stub";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_VERSION = 5;
+				USE_HEADERMAP = 0;
+			};
+			name = Release;
+		};
+		8AF6EE0FBA9F76FFB60D9F7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BAZEL_ADDITIONAL_BAZEL_BUILD_OPTIONS = "";
+				BAZEL_ADDITIONAL_LLDB_SETTINGS = "";
+				BAZEL_BUILD_EXEC = "$BAZEL_STUBS_DIR/build-wrapper";
+				BAZEL_CONFIGS = (
+				);
+				BAZEL_EXECUTION_LOG_ENABLED = 0;
+				BAZEL_INSTALLER = $BAZEL_INSTALLERS_DIR/installer;
+				BAZEL_INSTALLERS_DIR = $PROJECT_FILE_PATH/bazelinstallers;
+				BAZEL_OUTPUT_PROCESSOR = "$BAZEL_STUBS_DIR/output-processor.rb";
+				BAZEL_PATH = bazelisk;
+				BAZEL_PROFILE_ENABLED = 0;
+				BAZEL_STUBS_DIR = $PROJECT_FILE_PATH/bazelstubs;
+				BAZEL_WORKSPACE_ROOT = $SRCROOT/../../..;
+				CC = "$BAZEL_STUBS_DIR/clang-stub";
+				CLANG_ANALYZER_EXEC = $CC;
+				CODE_SIGNING_ALLOWED = 0;
+				CXX = $CC;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DONT_RUN_SWIFT_STDLIB_TOOL = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				LD = "$BAZEL_STUBS_DIR/ld-stub";
+				LIBTOOL = /usr/bin/true;
+				OTHER_LDFLAGS = "-fuse-ld=$BAZEL_STUBS_DIR/ld-stub";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EXEC = "$BAZEL_STUBS_DIR/swiftc-stub";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_VERSION = 5;
+				USE_HEADERMAP = 0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DD3E3A78F24433C200E8002C /* Build configuration list for PBXNativeTarget "CoreDataExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E03AB76E0DA2CCB5FA25DC7 /* Debug */,
+				706A82930362B1A9C3631389 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FF0140DB46FBEC31B67889BE /* Build configuration list for PBXProject "Test-Project-With-Coredata-Model" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8AF6EE0FBA9F76FFB60D9F7F /* Debug */,
+				752554E68E9AF0B2405577A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5B1CA7E44697CE3575B14AE1 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+			);
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 8D6660AFD5E15AAC1E4B28AD /* Project object */;
+}

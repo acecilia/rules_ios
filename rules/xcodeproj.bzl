@@ -522,7 +522,9 @@ def _populate_xcodeproj_targets_and_schemes(ctx, targets, src_dot_dots, all_tran
             "compilerFlags": "-fno-objc-arc",
         } for s in target_info.non_arc_srcs.to_list()]
 
-        asset_sources = _gather_asset_sources(target_info, src_dot_dots)
+        asset_sources = []
+        if ctx.attr.include_asset_files:
+            asset_sources = _gather_asset_sources(target_info, src_dot_dots)
 
         target_settings = {
             "PRODUCT_NAME": target_name,
@@ -945,12 +947,12 @@ https://www.rubydoc.info/github/CocoaPods/Xcodeproj/Xcodeproj/Constants
         "additional_prebuild_script": attr.string(default = "", mandatory = False),  # Note this script will run BEFORE Bazel build script
         "additional_bazel_build_options": attr.string_list(default = [], mandatory = False),
         "additional_pre_actions": attr.string_list_dict(default = {}, mandatory = False, doc = """
-Configure a list of pre-actions for build/run/test in each scheme generated. 
+Configure a list of pre-actions for build/run/test in each scheme generated.
 For each entry the key is one of build/test/run and value is a list of scripts.
 And it will not surface any error or output through build log.
         """),
         "additional_post_actions": attr.string_list_dict(default = {}, mandatory = False, doc = """
-Configure a list of post-actions for build/run/test in each scheme generated. 
+Configure a list of post-actions for build/run/test in each scheme generated.
 For each entry the key is one of build/test/run and value is a list of scripts.
 And it will not surface any error or output through build log.
         """),
@@ -959,6 +961,18 @@ Additional LLDB settings to be added in each target's .lldbinit configuration fi
         """),
         "bazel_execution_log_enabled": attr.bool(default = False, mandatory = False),
         "bazel_profile_enabled": attr.bool(default = False, mandatory = False),
+        "include_asset_files": attr.bool(
+            default = True,
+            mandatory = False,
+            doc = """
+Wether assset files should be included as part of the generated project. Not
+including assets in the generated project is a workaround for the fact that
+xcodegen can not handle properly some asset types.
+See:
+* https://github.com/yonaskolb/XcodeGen/issues/893
+* https://github.com/bazel-ios/rules_ios/issues/279
+        """,
+        ),
     },
     executable = True,
 )
