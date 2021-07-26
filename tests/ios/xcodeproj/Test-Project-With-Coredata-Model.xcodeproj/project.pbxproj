@@ -12,9 +12,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		055E0132344B68D4A4471FD6 /* common.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.pch; sourceTree = "<group>"; };
-		149ED90C9A67885093E0043F /* BUILD.bazel */ = {isa = PBXFileReference; path = BUILD.bazel; sourceTree = "<group>"; };
-		1AC89D1766C448D52EAF2CDA /* resource_bundle.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = resource_bundle.plist; sourceTree = "<group>"; };
 		212003282B0F838AE5C91DBE /* CoreDataExample.framework */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.framework; path = CoreDataExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA7DA1EF77DC1F116A9FE43D /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		F691623ED0B1E16979DAAEB9 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -45,15 +42,6 @@
 			path = frameworks;
 			sourceTree = "<group>";
 		};
-		5B68C9CBFF4DE0604B0D111D /* library */ = {
-			isa = PBXGroup;
-			children = (
-				055E0132344B68D4A4471FD6 /* common.pch */,
-				1AC89D1766C448D52EAF2CDA /* resource_bundle.plist */,
-			);
-			path = library;
-			sourceTree = "<group>";
-		};
 		73D5D31F2F0AA7ADC26D361D /* tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -65,7 +53,6 @@
 		80AF0FC0E06063A9291452DC /* build_bazel_rules_ios */ = {
 			isa = PBXGroup;
 			children = (
-				F72693636B28112EB9AB93E2 /* rules */,
 				73D5D31F2F0AA7ADC26D361D /* tests */,
 			);
 			name = build_bazel_rules_ios;
@@ -83,7 +70,6 @@
 		B075204F348E6EBADB958E15 /* core-data-resource-bundle */ = {
 			isa = PBXGroup;
 			children = (
-				149ED90C9A67885093E0043F /* BUILD.bazel */,
 				ED64C0865EC408099B53BDDA /* CoreDataExample */,
 			);
 			path = "core-data-resource-bundle";
@@ -93,18 +79,9 @@
 			isa = PBXGroup;
 			children = (
 				F691623ED0B1E16979DAAEB9 /* CoreDataManager.swift */,
-				5B1CA7E44697CE3575B14AE1 /* Model.xcdatamodeld */,
 				EA7DA1EF77DC1F116A9FE43D /* Person.swift */,
 			);
 			path = CoreDataExample;
-			sourceTree = "<group>";
-		};
-		F72693636B28112EB9AB93E2 /* rules */ = {
-			isa = PBXGroup;
-			children = (
-				5B68C9CBFF4DE0604B0D111D /* library */,
-			);
-			path = rules;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,17 +298,6 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		5B1CA7E44697CE3575B14AE1 /* Model.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-			);
-			path = Model.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 8D6660AFD5E15AAC1E4B28AD /* Project object */;
 }

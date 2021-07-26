@@ -4,6 +4,7 @@ load("//rules:additional_scheme_info.bzl", "additional_scheme_info")
 xcodeproj(
     name = "Test-Project-With-Coredata-Model",
     bazel_path = "bazelisk",
+    include_asset_files = False,
     include_transitive_targets = True,
     deps = [
         "//tests/ios/frameworks/core-data-resource-bundle:CoreDataExample",
