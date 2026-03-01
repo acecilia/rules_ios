@@ -10,7 +10,7 @@ load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:partial.bzl", "partial")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@build_bazel_apple_support//lib:apple_support.bzl", "apple_support")
-load("@build_bazel_rules_apple//apple/internal:providers.bzl", "new_appleresourcebundleinfo", "new_appleresourceinfo")
+load("@build_bazel_rules_apple//apple/internal:providers.bzl", "AppleResourceBundleInfo", "new_appleresourcebundleinfo", "new_appleresourceinfo")
 load("@build_bazel_rules_apple//apple/internal:apple_product_type.bzl", "apple_product_type")
 load("@build_bazel_rules_apple//apple/internal:intermediates.bzl", "intermediates")
 load("@build_bazel_rules_apple//apple/internal:partials.bzl", "partials")
@@ -19,6 +19,7 @@ load("@build_bazel_rules_apple//apple/internal:resources.bzl", "resources")
 load("@build_bazel_rules_apple//apple/internal:resource_actions.bzl", "resource_actions")
 load("@build_bazel_rules_apple//apple/internal:rule_attrs.bzl", "rule_attrs")
 load("@build_bazel_rules_apple//apple/internal:apple_toolchains.bzl", "AppleMacToolsToolchainInfo")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("//rules:transition_support.bzl", "transition_support")
 load("//rules:utils.bzl", "bundle_identifier_for_bundle")
 
@@ -44,12 +45,15 @@ def _precompiled_apple_resource_bundle_impl(ctx):
 
     platform_prerequisites = platform_support.platform_prerequisites(
         apple_fragment = ctx.fragments.apple,
+        apple_platform_info = struct(
+            target_os = platform_type,
+            target_environment = "device" if current_apple_platform.platform.is_device else "simulator",
+        ),
         config_vars = ctx.var,
         device_families = _DEVICE_FAMILIES_BY_PLATFORM_TYPE[platform_type],
         explicit_minimum_os = None,
         explicit_minimum_deployment_os = None,
         objc_fragment = None,
-        platform_type_string = platform_type,
         uses_swift = False,
         xcode_version_config = ctx.attr._xcode_config[apple_common.XcodeVersionConfig],
         features = [],
@@ -209,7 +213,6 @@ def _precompiled_apple_resource_bundle_impl(ctx):
             ],
         ),
         new_appleresourcebundleinfo(),
-        apple_common.new_objc_provider(),
         CcInfo(),
     ]
 
